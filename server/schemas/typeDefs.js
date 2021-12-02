@@ -31,6 +31,14 @@ const typeDefs = gql`
     token: ID
     user: User
   }
+
+  type Query {
+    items(name: String): [Item]
+    item(_id: ID!): Item
+    user: User
+    order(_id: ID!): Order
+    checkout(items: [ID]!): Checkout
+  }
 `;
 
 module.exports = typeDefs;
