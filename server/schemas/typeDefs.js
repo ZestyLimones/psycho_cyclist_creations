@@ -4,6 +4,7 @@ const typeDefs = gql`
   type Item {
     _id: ID
     name: String
+    description: String
     image: String
     price: Float
     quantity: Int

@@ -1,13 +1,14 @@
 import { gql } from '@apollo/client';
 
 export const QUERY_USER = gql`
-  query getItems {
+  query items {
     items {
       _id
       name
       price
       quantity
       image
+      description
     }
   }
   query user($username: String!) {
@@ -25,6 +26,7 @@ export const QUERY_USER = gql`
           price
           quantity
           image
+          description
         }
       }
     }
