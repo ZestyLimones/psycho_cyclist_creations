@@ -1,45 +1,84 @@
 import { useReducer } from 'react';
 import {
-  UPDATE_PROFILE_BIO,
-  UPDATE_PROFILE_PIC,
-  UPDATE_PROFILE,
-  UPDATE_PERSONAL_POSTS,
-  UPDATE_FRIEND_POSTS,
-  UPDATE_DISCOVER_POSTS,
+  UPDATE_PRODUCTS,
+  ADD_TO_CART,
+  UPDATE_CART_QUANTITY,
+  REMOVE_FROM_CART,
+  ADD_MULTIPLE_TO_CART,
+  UPDATE_CATEGORIES,
+  UPDATE_CURRENT_CATEGORY,
+  CLEAR_CART,
+  TOGGLE_CART,
 } from './actions';
 
 export const reducer = (state, action) => {
   switch (action.type) {
-    case UPDATE_PROFILE_BIO:
+    case UPDATE_PRODUCTS:
       return {
         ...state,
-        bio: action.bio,
+        products: [...action.products],
       };
-    case UPDATE_PROFILE_PIC:
+
+    case ADD_TO_CART:
       return {
         ...state,
-        profilePic: action.profilePic,
+        cartOpen: true,
+        cart: [...state.cart, action.product],
       };
-    case UPDATE_PROFILE:
+    case ADD_MULTIPLE_TO_CART:
       return {
         ...state,
-        ...action.payload,
+        cart: [...state.cart, ...action.products],
       };
-    case UPDATE_PERSONAL_POSTS:
+
+    case UPDATE_CART_QUANTITY:
       return {
         ...state,
-        posts: [...action.posts],
+        cartOpen: true,
+        cart: state.cart.map((product) => {
+          if (action._id === product._id) {
+            product.purchaseQuantity = action.purchaseQuantity;
+          }
+          return product;
+        }),
       };
-    case UPDATE_FRIEND_POSTS:
+
+    case REMOVE_FROM_CART:
+      let newState = state.cart.filter((product) => {
+        return product._id !== action._id;
+      });
+
       return {
         ...state,
-        friendPosts: [...action.friendPosts],
+        cartOpen: newState.length > 0,
+        cart: newState,
       };
-    case UPDATE_DISCOVER_POSTS:
+
+    case CLEAR_CART:
       return {
         ...state,
-        discoverPosts: [...action.discoverPosts],
+        cartOpen: false,
+        cart: [],
       };
+
+    case TOGGLE_CART:
+      return {
+        ...state,
+        cartOpen: !state.cartOpen,
+      };
+
+    case UPDATE_CATEGORIES:
+      return {
+        ...state,
+        categories: [...action.categories],
+      };
+
+    case UPDATE_CURRENT_CATEGORY:
+      return {
+        ...state,
+        currentCategory: action.currentCategory,
+      };
+
     default:
       return state;
   }
