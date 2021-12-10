@@ -16,18 +16,45 @@ import Button from '@mui/material/Button';
 
 import './App.css';
 
+const httpLink = createHttpLink({
+  uri: '/graphql',
+});
+
+const authLink = setContext((_, { headers }) => {
+  const token = localStorage.getItem('id_token');
+  return {
+    headers: {
+      ...headers,
+      authorization: token ? `Bearer ${token}` : '',
+    },
+  };
+});
+
+const client = new ApolloClient({
+  link: authLink.concat(httpLink),
+  cache: new InMemoryCache(),
+});
+
 function App() {
   return (
-    <div className="App">
-      <AppBar position="static">
-        <Toolbar>
-          <Typography mx="auto" variant="h4" component="div">
-            Here are my creations!
-          </Typography>
-        </Toolbar>
-      </AppBar>
-      <Button variant="contained">Hello World</Button>
-    </div>
+    <ApolloProvider client={client}>
+      <Router>
+        <div>
+          <StoreProvider>
+            <Nav />
+            <Switch>
+              <Route exact path="/" component={Home} />
+              <Route exact path="/login" component={Login} />
+              <Route exact path="/signup" component={Signup} />
+              <Route exact path="/success" component={Success} />
+              <Route exact path="/orderHistory" component={OrderHistory} />
+              <Route exact path="/items/:id" component={Detail} />
+              <Route component={NoMatch} />
+            </Switch>
+          </StoreProvider>
+        </div>
+      </Router>
+    </ApolloProvider>
   );
 }
 
